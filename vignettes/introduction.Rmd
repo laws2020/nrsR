@@ -1,0 +1,152 @@
+---
+title: "Nigerian PAYE Tax Computation with nrsr"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Nigerian PAYE Tax Computation with nrsr}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE, eval=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = "#>")
+library(nrsr)
+```
+
+## Overview
+
+**nrsr** computes Nigerian PAYE tax under any registered tax law version.
+All tax bands, relief rules, and statutory rates live in a single **law registry**
+(`R/law_registry.R`). When the government amends the tax law, you only edit
+that one file — no calculation logic changes anywhere else.
+
+---
+
+## Registered Tax Laws
+
+```{r laws, eval=FALSE}
+list_tax_laws()
+```
+
+---
+
+## Auto-Selecting the Right Law by Date
+
+```{r auto, eval=FALSE}
+get_applicable_law("2025-06-01")   # returns "PITA"
+get_applicable_law("2026-03-12")   # returns "NTA2025"
+
+# calc_paye() also accepts law = "auto"
+t_auto <- calc_paye(1624734, law = "auto")
+cat("Law selected:", t_auto$law, "\n")
+```
+
+---
+
+## Single Employee — NTA 2025
+
+```{r single, eval=FALSE}
+t1 <- calc_paye(1624734, annual_rent = 1800000)
+print(t1)
+```
+
+---
+
+## Net Take-Home Pay
+
+```{r net, eval=FALSE}
+net <- calc_net_salary(1624734, annual_rent = 1800000)
+print(net)
+```
+
+---
+
+## Compare All Registered Laws
+
+The comparison automatically includes every law in the registry.
+Add a new amendment and it appears here with no code changes.
+
+```{r compare, eval=FALSE}
+cmp <- compare_tax_laws(1624734, annual_rent = 1800000)
+print(cmp)
+```
+
+---
+
+## Tax Band Breakdown
+
+```{r breakdown, eval=FALSE}
+tax_breakdown(1624734, annual_rent = 1800000)
+```
+
+---
+
+## Batch Payroll
+
+```{r batch,eval=FALSE}
+employees <- data.frame(
+  name          = c("Emeka Obi", "Ngozi Adeyemi", "Tunde Balogun"),
+  gross_monthly = c(693228.96,   1624734,          3500000),
+  annual_rent   = c(0,           1800000,           2400000)
+)
+payroll <- calc_paye_batch(employees)
+payroll[, c("name", "gross_monthly", "monthly_tax", "effective_rate_pct", "net_monthly")]
+```
+
+---
+
+## How to Add a Future Tax Amendment
+
+When the government amends the tax law, **only one file changes**: `R/law_registry.R`.
+Copy the template block at the bottom of the registry:
+
+```r
+NTA2028 = list(
+  key            = "NTA2028",
+  description    = "Nigeria Tax Amendment Act 2028",
+  effective_from = as.Date("2028-01-01"),
+  effective_to   = NA,
+
+  bands = data.frame(
+    band_width = c(1200000, 2800000, 9000000, 13000000, 25000000, Inf),
+    rate       = c(0.00,    0.15,    0.18,    0.21,     0.23,     0.25),
+    label      = c("First N1.2M @0%", "Next N2.8M @15%",
+                   "Next N9M @18%",   "Next N13M @21%",
+                   "Next N25M @23%",  "Above N50M @25%"),
+    stringsAsFactors = FALSE
+  ),
+
+  deductions = list(
+    pension_employee_rate = 0.08,
+    pension_employer_rate = 0.10,
+    nhf_rate              = 0.025,
+    nhis_rate             = 0.05
+  ),
+
+  relief_rules = list(
+    cra_fixed          = NULL,
+    cra_variable_rate  = NULL,
+    rent_relief_rate   = 0.20,
+    rent_relief_max    = 700000,    # cap raised to N700K
+    tax_free_threshold = 1200000    # threshold raised to N1.2M
+  )
+)
+```
+
+After adding this entry, **zero other files change**:
+
+| What works automatically | How |
+|---|---|
+| `list_tax_laws()` shows it | registry scan |
+| `get_applicable_law("2028-06-01")` returns `"NTA2028"` | date range logic |
+| `calc_paye(..., law = "auto")` uses it after 2028-01-01 | date dispatch |
+| `calc_paye(..., law = "NTA2028")` computes correctly | registry lookup |
+| `compare_tax_laws(...)` includes it | iterates all keys |
+| `calc_paye_batch(df, law = "NTA2028")` works | passes through |
+
+---
+
+## References
+
+- Nigeria Tax Act (NTA) 2025, signed June 2025
+- [PaidHR — Understanding PAYE Tax Calculation in Nigeria](https://www.paidhr.com/blog/understanding-tax-computation-in-nigeria-a-step-by-step-guide)
+- [Nigeria Revenue Service](https://www.nrs.gov.ng)

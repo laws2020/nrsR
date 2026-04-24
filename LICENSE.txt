@@ -1,0 +1,11 @@
+YEAR: 2026
+COPYRIGHT HOLDER: Infosights Consulting (Lawrence Daniel Garba)
+
+All rights reserved. This software and its associated documentation
+files are the proprietary intellectual property of Infosights
+Consulting.
+
+Unauthorized copying, distribution, or modification of this package
+via any medium is strictly prohibited. The use of this software is
+granted solely to the Gombe State Internal Revenue Service (GIRS)
+under the terms of the Proposal Ref: IC/GIRS/TR/2026/01.

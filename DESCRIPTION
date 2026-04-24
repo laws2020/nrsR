@@ -1,0 +1,35 @@
+Package: nrsR
+Title: R toolkit for Nigerian tax systems, PAYE modeling, and revenue analysis. 
+Version: 0.0.1
+Authors@R: 
+    person("Lawrence", "Garba",
+           email = "laws.garba@gmail.com",
+           role = c("aut", "cre"),
+           comment = "Infosights Consulting")
+Description: Tools for computing Nigerian Pay-As-You-Earn (PAYE) income tax 
+    under evolving tax regulations. The package supports multiple tax law 
+    versions including the Personal Income Tax Act (PITA) and the Nigeria Tax 
+    Act (2025). Provides functions for PAYE calculation, payroll estimation, 
+    tax band analysis, and comparison across tax regimes.
+License: file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Imports:
+    cli,
+    jsonlite,
+    processx,
+    rlang,
+    withr
+Suggests:
+    testthat,
+    knitr,
+    rmarkdown,
+    ggplot2,
+    readxl,
+    readr
+VignetteBuilder: knitr
+URL: https://github.com/laws2020/nrsr
+BugReports: https://github.com/laws2020/nrsr/issues
+Config/testthat/edition: 3
+ByteCompile: yes
