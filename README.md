@@ -53,7 +53,7 @@ editing exactly **one file** with zero changes to any calculation logic.
 install.packages("nrsR_2.0.0.tar.gz", repos = NULL, type = "source")
 
 # Or from GitHub (when published)
-# remotes::install_github("yourorg/nrsR")
+# remotes::install_github("laws2020/nrsR")
 ```
 
 ------------------------------------------------------------------------
