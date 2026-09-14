@@ -1,0 +1,53 @@
+url: https://laws2020.github.io/nrsR
+
+template:
+  bootstrap: 5
+
+home:
+  title: nrsR - Nigeria Revenue Service PAYE Toolkit
+  description: >
+    Compute Nigerian Pay-As-You-Earn (PAYE) income tax under a versioned
+    law registry (PITA and NTA2025), with payroll batch processing,
+    multi-law comparison, and band-by-band breakdowns.
+
+navbar:
+  structure:
+    left:  [intro, reference, articles, news]
+    right: [github]
+  components:
+    articles:
+      text: Articles
+      menu:
+        - text: "PAYE from First Principles"
+          href: articles/paye-deep-dive.html
+
+reference:
+  - title: Core calculation
+    desc: Single-employee PAYE, take-home pay, and statutory reliefs.
+    contents:
+      - calc_paye
+      - calc_net_salary
+      - calc_reliefs
+  - title: Payroll & comparison
+    desc: Batch payroll, cross-law comparison, and band detail.
+    contents:
+      - calc_paye_batch
+      - compare_tax_laws
+      - tax_breakdown
+  - title: Law registry
+    desc: Inspect and resolve the versioned tax-law registry.
+    contents:
+      - list_tax_laws
+      - get_applicable_law
+  - title: Utilities
+    desc: Formatting helpers.
+    contents:
+      - format_naira
+  - title: Print & summary methods
+    desc: S3 methods for the result objects.
+    contents:
+      - print.nigeria_tax
+      - print.nigeria_net
+      - print.nigeria_comparison
+      - print.nigeria_reliefs
+      - summary.nigeria_tax

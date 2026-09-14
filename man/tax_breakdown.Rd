@@ -16,16 +16,13 @@ tax_breakdown(
 \arguments{
 \item{gross_monthly}{Numeric. Monthly gross income in Naira.}
 
-\item{annual_rent}{Numeric. Annual rent paid (for laws with rent relief).
-Default \code{0}.}
+\item{annual_rent}{Numeric. Annual rent paid. Default \code{0}.}
 
 \item{include_nhf}{Logical. Include NHF? Default \code{TRUE}.}
 
 \item{include_nhis}{Logical. Include NHIS? Default \code{FALSE}.}
 
-\item{law}{Character. Tax law key from the registry. Use
-\code{list_tax_laws()} to see all options. Default \code{"NTA2025"}.
-Pass \code{"auto"} to automatically select based on today's date.}
+\item{law}{Character. Tax law key from the registry. Default \code{"NTA2025"}.}
 
 \item{basic_monthly}{Numeric or \code{NULL}. Basic salary for NHF base.}
 }

@@ -1,7 +1,7 @@
 #' Calculate PAYE for a batch of employees
 #'
 #' Processes a data frame of employees and returns a tidy payroll summary.
-#' Supports any law in the registry — just pass its key.
+#' Supports any law in the registry -- just pass its key.
 #'
 #' @param df A data frame with at least a \code{gross_monthly} column.
 #'   Optional: \code{employee_id}, \code{name}, \code{annual_rent},
@@ -30,6 +30,19 @@ calc_paye_batch <- function(df,
     rlang::abort("`df` must be a data frame.")
   if (!"gross_monthly" %in% names(df))
     rlang::abort("`df` must contain a `gross_monthly` column.")
+  if (nrow(df) == 0)
+    rlang::abort("`df` must contain at least one row.")
+  if (!is.numeric(df$gross_monthly))
+    rlang::abort("`gross_monthly` must be numeric.")
+
+  bad_na  <- which(is.na(df$gross_monthly))
+  if (length(bad_na) > 0)
+    rlang::abort(paste0("`gross_monthly` has NA at row(s): ",
+                        paste(bad_na, collapse = ", "), "."))
+  bad_neg <- which(df$gross_monthly < 0)
+  if (length(bad_neg) > 0)
+    rlang::abort(paste0("`gross_monthly` is negative at row(s): ",
+                        paste(bad_neg, collapse = ", "), "."))
 
   if (identical(law, "auto")) law <- get_applicable_law()
 
@@ -74,7 +87,7 @@ calc_paye_batch <- function(df,
 #' Compare tax liability across any number of registered law versions
 #'
 #' Unlike the old \code{compare_tax_laws()} which was hardcoded to PITA vs
-#' NTA2025, this version accepts any vector of law keys — including future
+#' NTA2025, this version accepts any vector of law keys -- including future
 #' amendments. Simply add a new law to the registry and it appears here
 #' automatically.
 #'
@@ -123,13 +136,17 @@ compare_tax_laws <- function(gross_monthly,
   out
 }
 
-
 #' Detailed tax band breakdown
 #'
 #' Returns a tidy data frame showing how each band contributes to the
 #' total PAYE. Works with any law in the registry.
 #'
-#' @inheritParams calc_paye
+#' @param gross_monthly Numeric. Monthly gross income in Naira.
+#' @param annual_rent Numeric. Annual rent paid. Default \code{0}.
+#' @param include_nhf Logical. Include NHF? Default \code{TRUE}.
+#' @param include_nhis Logical. Include NHIS? Default \code{FALSE}.
+#' @param law Character. Tax law key from the registry. Default \code{"NTA2025"}.
+#' @param basic_monthly Numeric or \code{NULL}. Basic salary for NHF base.
 #' @return A data frame with per-band detail and cumulative tax.
 #'
 #' @examples

@@ -9,7 +9,7 @@ format_naira(x, prefix = "₦", digits = 2)
 \arguments{
 \item{x}{Numeric value.}
 
-\item{prefix}{Character. Currency prefix. Default \code{"₦"}.}
+\item{prefix}{Character. Currency prefix. Default \code{"\u20a6"}.}
 
 \item{digits}{Integer. Decimal places. Default \code{2}.}
 }

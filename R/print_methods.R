@@ -1,7 +1,7 @@
 #' Format a number as Nigerian Naira
 #'
 #' @param x Numeric value.
-#' @param prefix Character. Currency prefix. Default \code{"₦"}.
+#' @param prefix Character. Currency prefix. Default \code{"\u20a6"}.
 #' @param digits Integer. Decimal places. Default \code{2}.
 #' @return A formatted character string.
 #' @examples
@@ -17,6 +17,14 @@ format_naira <- function(x, prefix = "\u20a6", digits = 2) {
 .dline   <- function(n = 58)           cat(rep("-", n),  "\n", sep = "")
 .row     <- function(label, value, w = 35) cat(sprintf(" %-*s %s\n", w, label, value))
 
+
+#' Print a Nigerian PAYE tax computation
+#'
+#' @param x An object of class \code{nigeria_tax} from \code{\link{calc_paye}}.
+#' @param ... Unused; for S3 compatibility.
+#' @return Invisibly returns \code{x}. Called for its side effect of printing.
+#' @examples
+#' print(calc_paye(1624734, annual_rent = 1800000))
 #' @export
 print.nigeria_tax <- function(x, ...) {
   cat("\n"); .divider()
@@ -52,6 +60,14 @@ print.nigeria_tax <- function(x, ...) {
   invisible(x)
 }
 
+
+#' Print a monthly payslip summary
+#'
+#' @param x An object of class \code{nigeria_net} from \code{\link{calc_net_salary}}.
+#' @param ... Unused; for S3 compatibility.
+#' @return Invisibly returns \code{x}. Called for its side effect of printing.
+#' @examples
+#' print(calc_net_salary(1624734, annual_rent = 1800000))
 #' @export
 print.nigeria_net <- function(x, ...) {
   cat("\n"); .divider(52)
@@ -71,6 +87,15 @@ print.nigeria_net <- function(x, ...) {
   invisible(x)
 }
 
+
+#' Print a side-by-side tax law comparison
+#'
+#' @param x An object of class \code{nigeria_comparison} from
+#'   \code{\link{compare_tax_laws}}.
+#' @param ... Unused; for S3 compatibility.
+#' @return Invisibly returns \code{x}. Called for its side effect of printing.
+#' @examples
+#' print(compare_tax_laws(1624734, annual_rent = 1800000))
 #' @export
 print.nigeria_comparison <- function(x, ...) {
   cat("\n"); .divider(70)
@@ -102,6 +127,54 @@ print.nigeria_comparison <- function(x, ...) {
   invisible(x)
 }
 
+
+#' Print a Nigerian reliefs breakdown
+#'
+#' @param x An object of class \code{nigeria_reliefs}.
+#' @param ... Unused; for S3 compatibility.
+#' @return \code{x}, invisibly.
+#' @examples
+#' print(calc_reliefs(1624734, annual_rent = 1800000))
+#' @export
+print.nigeria_reliefs <- function(x, ...) {
+  cat("\n"); .divider(58)
+  cat(" STATUTORY RELIEFS & DEDUCTIONS\n")
+  cat(" Law:", x$law_description, "\n"); .divider(58)
+
+  .row("Monthly Gross:", format_naira(x$gross_monthly))
+  .row("Annual Gross:",  format_naira(x$gross_annual))
+  .dline(58)
+
+  cat(" MONTHLY DEDUCTIONS\n")
+  .row("  Pension (8%):", format_naira(x$pension_monthly))
+  if (x$nhf_monthly  > 0) .row("  NHF (2.5%):", format_naira(x$nhf_monthly))
+  if (x$nhis_monthly > 0) .row("  NHIS (5%):",  format_naira(x$nhis_monthly))
+  .dline(58)
+
+  cat(" ANNUAL RELIEFS\n")
+  if (x$cra_annual > 0)
+    .row("  Consolidated Relief (CRA):", format_naira(x$cra_annual))
+  if (x$rent_relief_annual > 0)
+    .row("  Rent Relief:", format_naira(x$rent_relief_annual))
+  .dline(58)
+
+  .row("Total Relief (monthly):", format_naira(x$total_relief_monthly))
+  .row("Total Relief (annual):",  format_naira(x$total_relief_annual))
+  .divider(58)
+  .row("TAXABLE INCOME (annual):", format_naira(x$taxable_income_annual))
+  .divider(58); cat("\n")
+  invisible(x)
+}
+
+
+
+#' Summarise a Nigerian PAYE tax computation
+#'
+#' @param object An object of class \code{nigeria_tax} from \code{\link{calc_paye}}.
+#' @param ... Unused; for S3 compatibility.
+#' @return Invisibly returns \code{object}. Called for its side effect of printing.
+#' @examples
+#' summary(calc_paye(1624734, annual_rent = 1800000))
 #' @export
 summary.nigeria_tax <- function(object, ...) {
   cat("nrsr | Law:", object$law, "| Gross:", format_naira(object$gross_monthly),

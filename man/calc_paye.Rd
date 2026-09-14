@@ -34,7 +34,7 @@ An object of class \code{nigeria_tax}.
 }
 \description{
 Computes the full PAYE tax liability for a single employee. The entire
-computation is driven by the law registry — passing a different \code{law}
+computation is driven by the law registry -- passing a different \code{law}
 key automatically uses that law's bands, rates, and relief rules.
 }
 \examples{

@@ -22,7 +22,7 @@ A data frame with one row per employee.
 }
 \description{
 Processes a data frame of employees and returns a tidy payroll summary.
-Supports any law in the registry — just pass its key.
+Supports any law in the registry -- just pass its key.
 }
 \examples{
 employees <- data.frame(

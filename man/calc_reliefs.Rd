@@ -34,7 +34,7 @@ A named list of class \code{nigeria_reliefs}.
 }
 \description{
 Computes all deductions and reliefs that reduce an employee's taxable
-income. All rates and caps are read directly from the law registry —
+income. All rates and caps are read directly from the law registry
 no hardcoded values. When a new tax amendment is registered, this
 function automatically picks up the new parameters.
 }

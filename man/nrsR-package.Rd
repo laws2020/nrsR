@@ -21,5 +21,10 @@ Useful links:
 \author{
 \strong{Maintainer}: Lawrence Garba \email{laws.garba@gmail.com} (Infosights Consulting)
 
+Authors:
+\itemize{
+  \item Lawrence Garba \email{laws.garba@gmail.com} (Infosights Consulting)
+}
+
 }
 \keyword{internal}

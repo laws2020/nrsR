@@ -11,7 +11,7 @@ get_applicable_law(as_of = Sys.Date())
 Defaults to today's date.}
 }
 \value{
-Character string — the law key (e.g. \code{"NTA2025"}).
+Character string -- the law key (e.g. \code{"NTA2025"}).
 }
 \description{
 Looks up the registry and returns the law key whose effective date

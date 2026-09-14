@@ -2,6 +2,7 @@
 
 S3method(print,nigeria_comparison)
 S3method(print,nigeria_net)
+S3method(print,nigeria_reliefs)
 S3method(print,nigeria_tax)
 S3method(summary,nigeria_tax)
 export(calc_net_salary)

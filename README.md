@@ -1,25 +1,48 @@
 
-# nrsR <img src="man/figures/logo.png" align="right" height="139" />
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+# nrsR <img src="man/figures/logo.png" align="right" height="139" alt="" />
 
 > **Nigeria Revenue Service R Toolkit** — PAYE Tax Calculator
 
-[![R
-package](https://img.shields.io/badge/R-package-276DC3)](https://cran.r-project.org)
+<!-- badges: start -->
+
+[![R-CMD-check](https://github.com/laws2020/nrsR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/laws2020/nrsR/actions/workflows/R-CMD-check.yaml)  
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)  
 [![License:
-MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![NRS](https://img.shields.io/badge/Aligned%20with-NRS%202025%20Reforms-008751)](https://www.nrs.gov.ng)
+MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)  
+[![NRS](https://img.shields.io/badge/Aligned%20with-NRS%202025%20Reforms-008751)](https://www.nrs.gov.ng)  
+<!-- badges: end -->
 
 ------------------------------------------------------------------------
 
 ## About
 
 **nrsR** is named after the **Nigeria Revenue Service (NRS)**, which
-replaced the Federal Inland Revenue Service (FIRS) under the landmark
-2025 tax reforms signed by President Tinubu.
+replaced  
+the Federal Inland Revenue Service (FIRS) under the landmark 2025 tax
+reforms  
+signed by President Tinubu.
 
-The package computes Nigerian Pay-As-You-Earn (PAYE) income tax using a
+The package computes Nigerian Pay-As-You-Earn (PAYE) income tax using
+a  
 **versioned law registry** architecture — future amendments require
-editing exactly **one file** with zero changes to any calculation logic.
+editing  
+exactly **one file** with zero changes to any calculation logic.
+
+Two design principles:
+
+- **One source of truth.** Every band, rate, relief, and effective date
+  lives  
+  in `.TAX_LAW_REGISTRY` (`R/law_registry.R`). All functions read from
+  it, so a  
+  new tax law is a single list entry, not a rewrite.  
+- **Law-agnostic engine.** Passing a different `law` key (or
+  `law = "auto"`)  
+  automatically selects that law’s bands and rules — the calculation
+  code never  
+  changes.
 
 ------------------------------------------------------------------------
 
@@ -49,11 +72,12 @@ editing exactly **one file** with zero changes to any calculation logic.
 ## Installation
 
 ``` r
-# From source tarball
-install.packages("nrsR_2.0.0.tar.gz", repos = NULL, type = "source")
-
-# Or from GitHub (when published)
-# remotes::install_github("laws2020/nrsR")
+# From source tarball  
+install.packages("nrsR_0.0.1.tar.gz", repos = NULL, type = "source")  
+  
+# Or the development version from GitHub  
+# install.packages("pak")  
+pak::pak("laws2020/nrsR")  
 ```
 
 ------------------------------------------------------------------------
@@ -61,29 +85,58 @@ install.packages("nrsR_2.0.0.tar.gz", repos = NULL, type = "source")
 ## Quick Start
 
 ``` r
-library(nrsR)
-
-# See all registered tax laws
-list_tax_laws()
-
-# Auto-select the right law by today's date
-calc_paye(1624734, law = "auto")
-
-# NTA 2025 — with rent relief
-calc_paye(1624734, annual_rent = 1800000)
-
-# Monthly take-home pay
-calc_net_salary(693228.96)
-
-# Compare all laws side-by-side
-compare_tax_laws(1624734, annual_rent = 1800000)
-
-# Batch payroll for entire workforce
-calc_paye_batch(employee_df)
-
-# Progressive band breakdown
-tax_breakdown(1624734)
+library(nrsR)  
+  
+# See all registered tax laws  
+list_tax_laws()  
+  
+# Auto-select the right law by today's date  
+calc_paye(1624734, law = "auto")  
+  
+# NTA 2025 — with rent relief  
+calc_paye(1624734, annual_rent = 1800000)  
+  
+# Monthly take-home pay  
+calc_net_salary(693228.96)  
+  
+# Compare all laws side-by-side  
+compare_tax_laws(1624734, annual_rent = 1800000)  
+  
+# Batch payroll for an entire workforce  
+calc_paye_batch(employee_df)  
+  
+# Progressive band breakdown  
+tax_breakdown(1624734)  
 ```
+
+------------------------------------------------------------------------
+
+## How PAYE Flows Through nrsR
+
+       gross_monthly, annual_rent, toggles, law  
+                         |  
+                         v  
+                 +----------------+  
+                 |  calc_paye()   |  1. resolve law from the registry  
+                 +----------------+  
+                         |  
+                         v  
+                 +----------------+  
+                 | calc_reliefs() |  2. pension, NHF, NHIS, CRA / rent relief  
+                 +----------------+  
+                         |  
+            taxable = gross_annual - reliefs  
+                         |  
+                         v  
+                 +----------------+  
+                 | progressive    |  3. pour income through the bands  
+                 | tax bands      |  
+                 +----------------+  
+                         |  
+                         v  
+          annual_tax, monthly_tax, effective_rate  
+
+Every step reads its numbers from **one place** — `.TAX_LAW_REGISTRY`.
 
 ------------------------------------------------------------------------
 
@@ -92,24 +145,25 @@ tax_breakdown(1624734)
 Open `R/law_registry.R` and append one block to `.TAX_LAW_REGISTRY`:
 
 ``` r
-NTA2028 = list(
-  key            = "NTA2028",
-  description    = "Nigeria Tax Amendment Act 2028",
-  effective_from = as.Date("2028-01-01"),
-  effective_to   = NA,
-  bands          = data.frame(
-    band_width = c(1200000, 2800000, ...),  # new thresholds
-    rate       = c(0.00, 0.15, ...),
-    label      = c("First ₦1.2M @0%", ...),
-    stringsAsFactors = FALSE
-  ),
-  deductions   = list(pension_employee_rate = 0.08, nhf_rate = 0.025, ...),
-  relief_rules = list(rent_relief_rate = 0.20, rent_relief_max = 700000, ...)
-)
+NTA2028 = list(  
+  key            = "NTA2028",  
+  description    = "Nigeria Tax Amendment Act 2028",  
+  effective_from = as.Date("2028-01-01"),  
+  effective_to   = NA,  
+  bands          = data.frame(  
+    band_width = c(1200000, 2800000, ...),  # new thresholds  
+    rate       = c(0.00, 0.15, ...),  
+    label      = c("First \u20a61.2M @0%", ...),  
+    stringsAsFactors = FALSE  
+  ),  
+  deductions   = list(pension_employee_rate = 0.08, nhf_rate = 0.025, ...),  
+  relief_rules = list(rent_relief_rate = 0.20, rent_relief_max = 700000, ...)  
+)  
 ```
 
 **That is the only change required.** Every function in the package
-picks it up automatically.
+picks it  
+up automatically.
 
 ------------------------------------------------------------------------
 
@@ -131,7 +185,14 @@ picks it up automatically.
 
 ## References
 
-- Nigeria Tax Act (NTA) 2025
-- [Nigeria Revenue Service — nrs.gov.ng](https://www.nrs.gov.ng)
+- Nigeria Tax Act (NTA) 2025  
+- [Nigeria Revenue Service — nrs.gov.ng](https://www.nrs.gov.ng)  
 - [PaidHR: Understanding PAYE Tax in
   Nigeria](https://www.paidhr.com/blog/understanding-tax-computation-in-nigeria-a-step-by-step-guide)
+
+------------------------------------------------------------------------
+
+## License
+
+MIT © 2026 Lawrence Garba (Infosights Consulting). See
+[LICENSE](LICENSE).

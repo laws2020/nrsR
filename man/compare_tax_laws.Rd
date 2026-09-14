@@ -29,7 +29,7 @@ A data frame with one row per law, showing key metrics side-by-side.
 }
 \description{
 Unlike the old \code{compare_tax_laws()} which was hardcoded to PITA vs
-NTA2025, this version accepts any vector of law keys — including future
+NTA2025, this version accepts any vector of law keys -- including future
 amendments. Simply add a new law to the registry and it appears here
 automatically.
 }

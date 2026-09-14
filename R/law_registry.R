@@ -8,7 +8,7 @@
 "_PACKAGE"
 
 # ============================================================
-#  LAW REGISTRY — The Single Source of Truth
+#  LAW REGISTRY -- The Single Source of Truth
 #
 #  HOW TO ADD A FUTURE AMENDMENT:
 #  1. Add ONE new entry to .TAX_LAW_REGISTRY below.
@@ -26,7 +26,7 @@
 .TAX_LAW_REGISTRY <- list(
 
   # ----------------------------------------------------------
-  # PITA — Personal Income Tax Act (legacy, up to Dec 2025)
+  # PITA -- Personal Income Tax Act (legacy, up to Dec 2025)
   # ----------------------------------------------------------
   PITA = list(
     key            = "PITA",
@@ -60,13 +60,13 @@
   ),
 
   # ----------------------------------------------------------
-  # NTA2025 — Nigeria Tax Act 2025 (effective Jan 2026)
+  # NTA2025 -- Nigeria Tax Act 2025 (effective Jan 2026)
   # ----------------------------------------------------------
   NTA2025 = list(
     key            = "NTA2025",
     description    = "Nigeria Tax Act 2025 (effective January 2026)",
     effective_from = as.Date("2026-01-01"),
-    effective_to   = NA,             # Current law — no end date yet
+    effective_to   = NA,             # Current law -- no end date yet
 
     bands = data.frame(
       band_width = c(800000,  2200000,  9000000,  13000000,  25000000,  Inf),
@@ -88,13 +88,13 @@
       cra_fixed          = NULL,     # CRA abolished
       cra_variable_rate  = NULL,     # CRA abolished
       rent_relief_rate   = 0.20,     # 20% of annual rent
-      rent_relief_max    = 500000,   # Capped at ₦500,000/year
-      tax_free_threshold = 800000    # First ₦800K is tax-free
+      rent_relief_max    = 500000,   # Capped at \u20a6500,000/year
+      tax_free_threshold = 800000    # First \u20a6800K is tax-free
     )
   )
 
   # ----------------------------------------------------------
-  # TEMPLATE: How to add a future amendment — e.g., NTA2028
+  # TEMPLATE: How to add a future amendment -- e.g., NTA2028
   #
   # NTA2028 = list(
   #   key            = "NTA2028",
@@ -167,7 +167,7 @@ list_tax_laws <- function() {
 #' @param as_of A \code{Date} or character string (e.g. \code{"2026-03-01"}).
 #'   Defaults to today's date.
 #'
-#' @return Character string — the law key (e.g. \code{"NTA2025"}).
+#' @return Character string -- the law key (e.g. \code{"NTA2025"}).
 #'
 #' @examples
 #' get_applicable_law("2025-06-01")   # returns "PITA"

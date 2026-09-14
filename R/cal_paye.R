@@ -39,7 +39,7 @@
 #' Calculate Nigerian PAYE tax for one employee
 #'
 #' Computes the full PAYE tax liability for a single employee. The entire
-#' computation is driven by the law registry — passing a different \code{law}
+#' computation is driven by the law registry -- passing a different \code{law}
 #' key automatically uses that law's bands, rates, and relief rules.
 #'
 #' @param gross_monthly Numeric. Monthly gross income in Naira.
@@ -98,10 +98,14 @@ calc_paye <- function(gross_monthly,
   )
 }
 
-
 #' Calculate monthly net (take-home) salary
 #'
-#' @inheritParams calc_paye
+#' @param gross_monthly Numeric. Monthly gross income in Naira.
+#' @param annual_rent Numeric. Annual rent paid. Default \code{0}.
+#' @param include_nhf Logical. Include NHF? Default \code{TRUE}.
+#' @param include_nhis Logical. Include NHIS? Default \code{FALSE}.
+#' @param law Character. Tax law key from the registry. Default \code{"NTA2025"}.
+#' @param basic_monthly Numeric or \code{NULL}. Basic salary for NHF base.
 #' @return A named list of class \code{nigeria_net}.
 #'
 #' @examples
